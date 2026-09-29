@@ -68,10 +68,14 @@ def main():
 
     print("\nКартинки рекламы")
     kdir = os.path.join(HERE, "kreativy")
-    est = [f for f in os.listdir(kdir) if f.lower().endswith((".jpg", ".jpeg", ".png", ".webp"))]
+    est = [f for f in os.listdir(kdir)
+           if f.lower().endswith((".jpg", ".jpeg", ".png", ".webp", ".mp4"))]
     kab = "kabinet.png" in est
     kart = [f for f in est if f != "kabinet.png"]
-    stroka(len(kart) > 0, "картинок положено: %d из 5" % len(kart))
+    reklama = json.loads(io.open(os.path.join(HERE, "shagi", "04-reklama.json"),
+                                 encoding="utf-8").read())
+    mest = sum(len(s.get("grid") or []) for s in reklama["steps"])
+    stroka(len(kart) >= mest, "материалов положено: %d из %d" % (len(kart), mest))
     stroka(kab, "скриншот кабинета: %s" % ("на месте" if kab else "ещё нет"))
 
     print("\nСсылки результатов")
