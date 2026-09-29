@@ -4,7 +4,8 @@
 
     python3 kreativy.py
 
-Картинки: kreativy/1.jpg … 5.jpg (или .png). Скриншот кабинета: kreativy/kabinet.png.
+Картинки: kreativy/1.jpg … (или .png, или .mp4 для видео).
+Скриншот кабинета: kreativy/kabinet.png.
 Ссылки на картинки: по одной в строке в kreativy/ssylki.txt, в том же порядке.
 Чего нет — останется рамкой с подписью, экран не ломается.
 """
@@ -18,7 +19,7 @@ DIR = os.path.join(HERE, "kreativy")
 
 
 def found(n):
-    for ext in (".jpg", ".jpeg", ".png", ".webp"):
+    for ext in (".jpg", ".jpeg", ".png", ".webp", ".mp4"):
         rel = "kreativy/%d%s" % (n, ext)
         if os.path.exists(os.path.join(HERE, rel)):
             return rel
@@ -36,7 +37,8 @@ def main():
     live = []
     for i, g in enumerate(step["grid"], 1):
         rel = found(i)
-        g["file"] = rel or ("kreativy/%d.jpg" % i)
+        if rel:
+            g["file"] = rel
         if rel:
             live.append((i, g.get("text", "картинка %d" % i),
                          urls[i - 1] if len(urls) >= i else None))

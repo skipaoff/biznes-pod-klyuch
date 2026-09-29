@@ -17,6 +17,7 @@ import base64
 import io
 import json
 import os
+import struct
 import sys
 from string import Template
 
@@ -54,8 +55,39 @@ def kartinka(src):
     if not os.path.exists(path):
         return ""
     ext = os.path.splitext(path)[1].lower()
-    mime = {".png": "image/png", ".webp": "image/webp"}.get(ext, "image/jpeg")
+    mime = {".png": "image/png", ".webp": "image/webp",
+            ".mp4": "video/mp4"}.get(ext, "image/jpeg")
     return ("data:%s;base64," % mime) + base64.b64encode(io.open(path, "rb").read()).decode("ascii")
+
+
+def storony(src):
+    """Ширина и высота картинки, чтобы плитка не резала заголовок."""
+    path = src if os.path.isabs(src) else os.path.join(HERE, src)
+    if not os.path.exists(path):
+        return None
+    head = io.open(path, "rb").read(64)
+    if head[:8] == b"\x89PNG\r\n\x1a\n":
+        w, h = struct.unpack(">II", head[16:24])
+        return w, h
+    if head[:2] == b"\xff\xd8":
+        f = io.open(path, "rb")
+        f.read(2)
+        while True:
+            b = f.read(1)
+            if not b:
+                return None
+            if b != b"\xff":
+                continue
+            m = f.read(1)
+            while m == b"\xff":
+                m = f.read(1)
+            if m in b"\xc0\xc1\xc2\xc3\xc5\xc6\xc7\xc9\xca\xcb\xcd\xce\xcf":
+                f.read(3)
+                h, w = struct.unpack(">HH", f.read(4))
+                return w, h
+            ln = struct.unpack(">H", f.read(2))[0]
+            f.read(ln - 2)
+    return None
 
 
 def grid(arr):
@@ -64,9 +96,23 @@ def grid(arr):
         return ""
     out = []
     for n, g in enumerate(arr, 1):
-        src = kartinka(g.get("file"))
-        inner = ('<img src="%s" alt="">' % src) if src else (
-            '<span class="hole">место под картинку %d</span>' % n)
+        rel = g.get("file") or ""
+        src = kartinka(rel)
+        kino = rel.lower().endswith(".mp4")
+        ratio = ""
+        if src and not kino:
+            wh = storony(rel)
+            if wh:
+                ratio = ' style="aspect-ratio:%d/%d"' % wh
+        elif kino:
+            ratio = ' style="aspect-ratio:4/5"'
+        if not src:
+            inner = '<span class="hole">место под картинку %d</span>' % n
+        elif kino:
+            inner = ('<video src="%s" autoplay muted loop playsinline%s></video>'
+                     % (src, ratio))
+        else:
+            inner = '<img src="%s" alt=""%s>' % (src, ratio)
         out.append('<figure class="tile%s">%s<figcaption>%s</figcaption></figure>'
                    % ("" if src else " empty", inner, esc(g.get("text", ""))))
     return '<div class="grid">' + "".join(out) + "</div>"
