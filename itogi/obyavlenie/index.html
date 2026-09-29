@@ -74,6 +74,10 @@ h1{font-family:var(--disp);font-weight:600;letter-spacing:-.025em;font-size:clam
   border-radius:14px;padding:15px 16px}
 .card.wide{grid-column:1/-1;margin-top:14px}
 @media(max-width:560px){.card.wide{margin-top:0}}
+.krea{display:grid;grid-template-columns:repeat(auto-fit,minmax(86px,1fr));gap:7px}
+.krea img,.krea video{display:block;width:100%;height:auto;border-radius:8px;border:1px solid var(--line)}
+.krea a{display:block;line-height:0}
+.krea a:hover img{border-color:var(--accent)}
 .card h3{font-family:var(--disp);font-size:14px;font-weight:600;margin:9px 0 10px;letter-spacing:-.01em}
 .chips{display:flex;flex-wrap:wrap;gap:7px}
 .chip{border:1px solid var(--line);background:var(--fill);border-radius:999px;padding:5px 11px;font-size:12.5px;color:#DDD9D1}
@@ -98,7 +102,7 @@ h1{font-family:var(--disp);font-weight:600;letter-spacing:-.025em;font-size:clam
 <div class="wrap">
   <span class="live"><i></i>кампания работает</span>
   <h1>Объявление для клиники<br>«Комфорт» на Троєщині</h1>
-  <p class="sub">Вертикальное видео, текст, аудитория, места показа и дневной бюджет. Кнопка из объявления ведёт прямо к продавцу в Telegram.</p>
+  <p class="sub">Одно обещание на всю кампанию: отбеливание под контролем врача и сертификат на 500 грн на первое посещение. Одно действие: написать «УЛЫБКА». Кнопка открывает чат, слово уже вписано.</p>
 
   <div class="grid">
     <div>
@@ -110,15 +114,15 @@ h1{font-family:var(--disp);font-weight:600;letter-spacing:-.025em;font-size:clam
             <div class="pmeta">Реклама · Троєщина</div>
           </div>
         </div>
-        <div class="ptext"><b>Білі зуби без шкоди для емалі.</b> Кабінетне відбілювання MagicSmile у «Комфорт» на Троєщині. Професійна гігієна в подарунок, консультація безкоштовна. Працюємо щодня до 20:00.</div>
+        <div class="ptext"><b>Белые зубы без вреда для эмали.</b> В Comfort метод подбирают после осмотра, а процедуру контролирует врач. Сертификат 500 грн на первое посещение — напишите «УЛЫБКА», подберём время консультации.</div>
         <div class="pvid">
           <video id="v" src="../kreativ/video.mp4" autoplay muted loop playsinline preload="metadata"></video>
           <span class="ratio">9:16 · 39 с</span>
           <button class="snd" id="snd" type="button">включить звук</button>
         </div>
-        <a class="cta" href="https://t.me/vlad_ai_yasko?text=%D0%94%D0%BE%D0%B1%D1%80%D0%B8%D0%B9%20%D0%B4%D0%B5%D0%BD%D1%8C!%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D0%B8%D1%81%D1%8F%20%D0%BD%D0%B0%20%D0%B2%D1%96%D0%B4%D0%B1%D1%96%D0%BB%D1%8E%D0%B2%D0%B0%D0%BD%D0%BD%D1%8F" target="_blank" rel="noopener">
-          <div><b>Білі зуби за візит</b><span>Троєщина · щодня до 20:00</span></div>
-          <em>Написати в Telegram</em>
+        <a class="cta" href="https://t.me/vlad_ai_yasko?text=%D0%A3%D0%9B%D0%AB%D0%91%D0%9A%D0%90" target="_blank" rel="noopener">
+          <div><b>Сертификат 500 грн</b><span>Троєщина · щодня до 20:00</span></div>
+          <em>Напишите «УЛЫБКА»</em>
         </a>
         <div class="pfoot"><span>Подобається</span><span>Коментар</span><span>Поділитися</span></div>
       </div>
@@ -158,19 +162,33 @@ h1{font-family:var(--disp);font-weight:600;letter-spacing:-.025em;font-size:clam
         <div class="card">
           <span class="lab">куда ведёт</span>
           <h3>Заявка</h3>
-          <div class="kv"><span>кнопка</span><b>Telegram</b></div>
+          <div class="kv"><span>кнопка</span><b>чат со словом «УЛЫБКА»</b></div>
           <div class="kv"><span>отвечает</span><b>продавец клиники</b></div>
-          <div class="kv"><span>запись</span><b>без звонка</b></div>
+          <div class="kv"><span>обещание</span><b>сертификат 500 грн</b></div>
         </div>
       </div>
 
+
+      <div class="card">
+        <span class="lab">в этой же кампании</span>
+        <h3>Ещё семь материалов</h3>
+        <div class="krea">
+          <a href="../../kreativy/originaly/1-belaya-ulybka.png"><img src="../../kreativy/1.jpg" alt="«Отбеливание вредно?»" loading="lazy"></a>
+          <a href="../../kreativy/originaly/2-sovetov-sotni.png"><img src="../../kreativy/2.jpg" alt="Советов сотни, зубы одни" loading="lazy"></a>
+          <a href="../../kreativy/originaly/3-vodu-pit-bolno.png"><img src="../../kreativy/3.jpg" alt="«Потом воду пить больно?»" loading="lazy"></a>
+          <a href="../../kreativy/originaly/4-chto-proishodit.png"><img src="../../kreativy/4.jpg" alt="Что происходит во время отбеливания" loading="lazy"></a>
+          <a href="../../kreativy/originaly/5-smotrit-na-dvoih.png"><img src="../../kreativy/5.jpg" alt="Она смотрит на двоих" loading="lazy"></a>
+          <a href="../../kreativy/originaly/6-20-foto.png"><img src="../../kreativy/6.jpg" alt="20 фото, улыбка на двух" loading="lazy"></a>
+          <video src="../../kreativy/7.mp4" autoplay muted loop playsinline></video>
+        </div>
+      </div>
       <div class="card wide">
         <span class="lab">первые секунды</span>
         <h3>Что видит человек в ленте</h3>
         <div class="kv"><span>0–3 с</span><b>лицо в кадре, «почему-то білі зуби…»</b></div>
         <div class="kv"><span>3–15 с</span><b>живая история: страх зіпсувати емаль</b></div>
         <div class="kv"><span>15–30 с</span><b>клиника «Комфорт» и сама процедура</b></div>
-        <div class="kv"><span>30–39 с</span><b>подарок и название клиники</b></div>
+        <div class="kv"><span>30–39 с</span><b>сертификат и название клиники</b></div>
         <div class="kv"><span>формат</span><b>9:16 · субтитры · українською</b></div>
       </div>
 
@@ -178,7 +196,7 @@ h1{font-family:var(--disp);font-weight:600;letter-spacing:-.025em;font-size:clam
   </div>
 
 <div class="go">
-        <a class="btn main" href="https://t.me/vlad_ai_yasko?text=%D0%94%D0%BE%D0%B1%D1%80%D0%B8%D0%B9%20%D0%B4%D0%B5%D0%BD%D1%8C!%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D0%B8%D1%81%D1%8F%20%D0%BD%D0%B0%20%D0%B2%D1%96%D0%B4%D0%B1%D1%96%D0%BB%D1%8E%D0%B2%D0%B0%D0%BD%D0%BD%D1%8F" target="_blank" rel="noopener">Пройти путь клиента</a>
+        <a class="btn main" href="https://t.me/vlad_ai_yasko?text=%D0%A3%D0%9B%D0%AB%D0%91%D0%9A%D0%90" target="_blank" rel="noopener">Пройти путь клиента</a>
         <a class="btn" href="https://comfort-stom-3.vercel.app/" target="_blank" rel="noopener">Сайт клиники</a>
         <a class="btn" href="../kreativ/video.mp4" target="_blank" rel="noopener">Скачать ролик</a>
       </div>
