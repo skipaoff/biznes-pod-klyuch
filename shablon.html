@@ -110,7 +110,13 @@ h1{font-family:var(--disp);font-weight:600;letter-spacing:-.025em;font-size:clam
 .polka .grid{margin-top:10px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(124px,1fr));gap:9px;margin-bottom:12px}
 .tile{margin:0;background:#080C12;border:1px solid var(--line);border-radius:11px;overflow:hidden;
-  display:flex;flex-direction:column}
+  display:flex;flex-direction:column;position:relative;transition:.2s}
+.tile:has(.lupa):hover{border-color:rgba(49,233,129,.55);transform:translateY(-2px)}
+.lupa{position:absolute;inset:0;border:0;background:transparent;cursor:zoom-in;padding:0}
+.lupa::after{content:"↗";position:absolute;right:7px;top:7px;width:22px;height:22px;border-radius:7px;
+  display:grid;place-items:center;font-size:12px;color:#04120B;background:var(--accent);
+  opacity:0;transform:scale(.8);transition:.2s}
+.tile:hover .lupa::after{opacity:1;transform:none}
 .tile img,.tile video{display:block;width:100%;height:auto;object-fit:contain}
 .tile.empty{border-style:dashed}
 .tile .hole{display:grid;place-items:center;aspect-ratio:4/5;font-family:var(--mono);font-size:10px;
@@ -314,6 +320,16 @@ h1{font-family:var(--disp);font-weight:600;letter-spacing:-.025em;font-size:clam
 .shstep h3{font-size:15px;margin:2px 0 8px;font-weight:700}
 .empty{color:var(--dim);font-size:13px;margin:0}
 
+/* картинка целиком поверх экрана */
+#big{position:fixed;inset:0;z-index:50;background:rgba(3,6,10,.93);display:none;
+  place-items:center;padding:28px;cursor:zoom-out}
+#big[open],#big.on{display:grid}
+#big img,#big video{max-width:min(100%,900px);max-height:88vh;width:auto;height:auto;
+  border-radius:14px;box-shadow:0 30px 80px -30px #000;display:block}
+#bigshut{position:fixed;right:18px;top:18px;border:1px solid var(--hot);background:rgba(20,26,35,.9);
+  color:var(--ink);cursor:pointer;border-radius:10px;padding:8px 14px;font-family:var(--mono);font-size:12px}
+#bigshut:hover{border-color:var(--accent);color:var(--accent)}
+
 /* сводка снизу */
 .itogi{margin-top:16px;background:var(--deep);border:1px solid var(--line);border-radius:16px;
   padding:13px 15px 15px}
@@ -372,6 +388,8 @@ h1{font-family:var(--disp);font-weight:600;letter-spacing:-.025em;font-size:clam
   $fin
 
 </div>
+
+<div id="big"><button id="bigshut" type="button">закрыть</button><span id="bigbody"></span></div>
 
 <script>
 (function(){
@@ -449,6 +467,25 @@ h1{font-family:var(--disp);font-weight:600;letter-spacing:-.025em;font-size:clam
       setTimeout(function(){ li.classList.remove('hid'); }, at);
     });
   }
+
+  /* нажали на картинку — показываем её целиком */
+  var big = document.getElementById('big'), bigbody = document.getElementById('bigbody');
+  function zakryt(){ big.classList.remove('on'); bigbody.innerHTML = ''; }
+  [].slice.call(document.querySelectorAll('.lupa')).forEach(function(b){
+    b.addEventListener('click', function(e){
+      e.stopPropagation();
+      var med = b.parentNode.querySelector('img,video');
+      if(!med) return;
+      var node = med.cloneNode(true);
+      node.removeAttribute('style');
+      if(node.tagName === 'VIDEO'){ node.controls = true; node.autoplay = true; }
+      bigbody.innerHTML = '';
+      bigbody.appendChild(node);
+      big.classList.add('on');
+    });
+  });
+  big.addEventListener('click', zakryt);
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') zakryt(); });
 
   /* нажали на человека — на месте работы показываем его карточку */
   var mates = [].slice.call(document.querySelectorAll('.mate'));

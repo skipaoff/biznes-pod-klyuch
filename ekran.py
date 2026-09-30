@@ -113,8 +113,10 @@ def grid(arr):
                      % (src, ratio))
         else:
             inner = '<img src="%s" alt=""%s>' % (src, ratio)
-        out.append('<figure class="tile%s">%s<figcaption>%s</figcaption></figure>'
-                   % ("" if src else " empty", inner, esc(g.get("text", ""))))
+        knopka = ('<button class="lupa" type="button" data-kino="%s" '
+                  'aria-label="Посмотреть целиком"></button>' % ("1" if kino else "")) if src else ""
+        out.append('<figure class="tile%s">%s%s<figcaption>%s</figcaption></figure>'
+                   % ("" if src else " empty", inner, knopka, esc(g.get("text", ""))))
     return '<div class="grid">' + "".join(out) + "</div>"
 
 
@@ -231,7 +233,8 @@ def mate_sheets(team, steps):
                 if s.get("say"):
                     body.append('<p class="say">' + esc(s["say"]) + "</p>")
                 body.append(chips(s.get("chips")))
-                body.append(grid(s.get("grid")))
+                if s.get("grid"):
+                    body.append(items([g.get("text", "") for g in s["grid"]]))
                 body.append(items(s.get("items")))
             elif st == "run":
                 body.append('<p class="empty">Работает прямо сейчас.</p>')
