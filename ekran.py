@@ -311,7 +311,7 @@ def fin_block(f):
             % (esc(f.get("title", "Готово")), esc(f.get("text", "")), shot, links))
 
 
-def build(name):
+def build(name, tiho=False):
     path = os.path.join(HERE, "shagi", name + ".json")
     d = json.loads(io.open(path, encoding="utf-8").read())
     steps = d.get("steps", [])
@@ -345,8 +345,9 @@ def build(name):
     if not os.path.isdir(BUILD):
         os.makedirs(BUILD)
     io.open(out, "w", encoding="utf-8").write(page)
-    print("%s → %s (%d из %d, %s)" % (name, out, done, len(steps),
-                                      "идёт" if live else "стоп"))
+    if not tiho:
+        print("%s → %s (%d из %d, %s)" % (name, out, done, len(steps),
+                                          "идёт" if live else "стоп"))
     return out
 
 

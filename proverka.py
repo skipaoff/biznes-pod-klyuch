@@ -47,7 +47,7 @@ def main():
     ssylki = []
     for name in EKRANY:
         try:
-            out = ekran.build(name)
+            out = ekran.build(name, tiho=True)
             d = json.loads(io.open(os.path.join(HERE, "shagi", name + ".json"),
                                    encoding="utf-8").read())
             sek = sum(int(s.get("dur", 20)) for s in d["steps"])

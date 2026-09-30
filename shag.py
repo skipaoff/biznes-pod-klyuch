@@ -112,8 +112,8 @@ def main():
         otvet(name, args[2:])
     else:
         run(name, int(cmd))
-    out = ekran.build(name)
-    print("публикуй этот файл: %s" % out)
+    out = ekran.build(name, tiho=True)
+    print(out)
 
 
 if __name__ == "__main__":
