@@ -4,7 +4,8 @@
 
     python3 kreativy.py
 
-Картинки: kreativy/1.jpg … (или .png, или .mp4 для видео).
+Материалы: kreativy/1.jpg … по порядку (или .png, или .mp4 для видео).
+Файл с номером больше, чем мест на полке, добавляет себе место сам.
 Скриншот кабинета: kreativy/kabinet.png.
 Ссылки на картинки: по одной в строке в kreativy/ssylki.txt, в том же порядке.
 Чего нет — останется рамкой с подписью, экран не ломается.
@@ -34,6 +35,13 @@ def main():
     if os.path.exists(path):
         urls = [l.strip() for l in io.open(path, encoding="utf-8") if l.strip()]
 
+    # файлы сверх нынешних мест добавляют новые места сами
+    n = len(step["grid"])
+    while found(n + 1):
+        n += 1
+        step["grid"].append({"file": found(n), "text": "материал %d — подпиши меня" % n})
+        print("добавил место под %s" % found(n))
+
     live = []
     for i, g in enumerate(step["grid"], 1):
         rel = found(i)
@@ -42,12 +50,12 @@ def main():
         if rel:
             live.append((i, g.get("text", "картинка %d" % i),
                          urls[i - 1] if len(urls) >= i else None))
-    print("картинок на месте: %d из %d" % (len(live), len(step["grid"])))
+    print("материалов на месте: %d из %d" % (len(live), len(step["grid"])))
 
     base = [l for l in d["fin"]["links"] if not l.get("_krea")]
     for i, text, url in live:
         if url:
-            base.append({"text": "Картинка %d — %s" % (i, text), "url": url, "_krea": True})
+            base.append({"text": "Материал %d — %s" % (i, text), "url": url, "_krea": True})
     d["fin"]["links"] = base
 
     shot = os.path.join(DIR, "kabinet.png")
