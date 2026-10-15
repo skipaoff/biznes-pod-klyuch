@@ -4,8 +4,9 @@
 
     python3 proverka.py
 
-Собирает все четыре экрана, считает портреты, дёргает ссылки результатов
-и смотрит, положены ли картинки рекламы. Печатает короткий отчёт.
+Собирает все четыре экрана, проверяет документы шагов и реплики, офис и
+портреты, дёргает ссылки результатов и смотрит, положены ли картинки
+рекламы. Печатает короткий отчёт.
 Ничего не меняет и никуда не ходит, кроме проверки ссылок.
 """
 import io
@@ -43,11 +44,13 @@ def zhivaya(url):
 def main():
     import ekran
 
+    import ofis
+
     print("\nЭкраны")
     ssylki = []
     for name in EKRANY:
         try:
-            out = ekran.build(name, tiho=True)
+            ekran.build(name, tiho=True)
             d = json.loads(io.open(os.path.join(HERE, "shagi", name + ".json"),
                                    encoding="utf-8").read())
             sek = sum(int(s.get("dur", 20)) for s in d["steps"])
@@ -56,15 +59,41 @@ def main():
                    "%-12s %d шагов, идёт %d:%02d%s"
                    % (name, len(d["steps"]), sek // 60, sek % 60,
                       "" if not bez_vida else ", без картинки работы: " + ", ".join(bez_vida)))
+            bez_rechi = [s["title"] for s in d["steps"] if not (s.get("take") and s.get("say"))]
+            stroka(not bez_rechi, "%-12s реплики «беру» и «сделал» у каждого шага%s"
+                   % (name, "" if not bez_rechi else ": нет у " + ", ".join(bez_rechi)))
+            net_doka = []
+            for s in d["steps"]:
+                doc = s.get("doc") or {}
+                if doc and not os.path.exists(os.path.join(HERE, doc.get("path", ""))):
+                    net_doka.append(doc.get("path", ""))
+                for v in s.get("viz") or []:
+                    for x in v.get("items", []) if isinstance(v.get("items"), list) else []:
+                        if isinstance(x, dict) and x.get("img") and not os.path.exists(os.path.join(HERE, x["img"])):
+                            net_doka.append(x["img"])
+                for sh in s.get("shots") or []:
+                    if not os.path.exists(os.path.join(HERE, sh.get("file", ""))):
+                        net_doka.append(sh.get("file", ""))
+            doki = sum(1 for s in d["steps"] if s.get("doc"))
+            stroka(not net_doka, "%-12s документов у шагов: %d%s"
+                   % (name, doki, "" if not net_doka else ", не найдено: " + ", ".join(net_doka)))
+            stoly = [ofis.mesto(m, k) for k, m in enumerate(d["team"])]
+            stroka(len(d["team"]) <= len(ofis.CREW) and len(set(stoly)) == len(stoly),
+                   "%-12s в офисе %d человек, у каждого свой стол" % (name, len(d["team"])))
             for l in (d.get("fin") or {}).get("links", []):
                 if l.get("url", "").startswith("http"):
                     ssylki.append((name, l["text"], l["url"]))
         except Exception as e:
             stroka(False, "%-12s не собирается: %s" % (name, e))
 
+    print("\nОфис")
+    sprajty = ofis.probe(ofis.assets())
+    stroka(all(("char%d" % k) in sprajty for k in range(6)) and "floor" in sprajty and "desk_front" in sprajty,
+           "спрайтов офиса: %d в pixel/" % len(sprajty))
+
     print("\nПортреты")
     lica = [f for f in os.listdir(os.path.join(HERE, "lica")) if f.endswith(".png")]
-    stroka(len(lica) >= 6, "%d штук в lica/" % len(lica))
+    stroka(len(lica) >= 9, "%d штук в lica/" % len(lica))
 
     print("\nКартинки рекламы")
     kdir = os.path.join(HERE, "kreativy")
